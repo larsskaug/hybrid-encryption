@@ -1,45 +1,80 @@
-@(widgets: Seq[Widget], form: Form[WidgetForm.Data], postUrl: Call, isPrime: Boolean)(implicit request: MessagesRequestHeader)
+@(widgets: Seq[Widget], elgResults: Seq[ElgResult], form: Form[WidgetForm.Data], postUrl: Call)(implicit request: MessagesRequestHeader)
 
-  @main("Widgets") {
+@main("Widgets") {
 
-    <h1>Widgets</h1>
+<h1>Hybrid Encryption Details</h1>
 
-    <h2>Is it prime? @isPrime</h2>
+<!--
+case class ElgResult(p: BigInt, generator: BigInt, aRandom: BigInt,
+alphaToPowerOfA: BigInt, cipher: String, origMsg: String)
+-->
 
-    @* Flash shows updates to a page *@
-    @request.flash.data.map{ case (name, value) =>
-      <div>@name: @value</div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>p</th>
+        <th>generator</th>
+        <th>a</th>
+        <th>alpha^a</th>
+        <th>Original Message</th>
+        <th>Cipher</th>
+    </thead>
+    <tbody>
+    @for(r <- elgResults) {
+    <tr>
+        <td>@r.p</td>
+        <td>@r.generator</td>
+        <td>@r.aRandom</td>
+        <td>@r.alphaToPowerOfA</td>
+        <td>@r.origMsg</td>
+        <td>@r.cipher</td>
+    </tr>
     }
+    </tbody>
+</table>
 
-    <table>
-      <thead>
-        <tr><th>Name</th><th>Price</th>
-      </thead>
-      <tbody>
-      @for(w <- widgets) {
-        <tr><td>@w.name</td><td>@w.price</td></tr>
-      }
-      </tbody>
-    </table>
+<hr/>
 
-    <hr/>
+@* Flash shows updates to a page *@
+@request.flash.data.map{ case (name, value) =>
+<div>@name: @value</div>
+}
 
-    @* Global errors are not tied to any particular form field *@
-    @if(form.hasGlobalErrors) {
-      @form.globalErrors.map { error: FormError =>
-        <div>
-          @error.key: @error.message
-        </div>
-      }
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+    </thead>
+    <tbody>
+    @for(w <- widgets) {
+    <tr>
+        <td>@w.name</td>
+        <td>@w.price</td>
+    </tr>
     }
+    </tbody>
+</table>
 
-    @helper.form(postUrl) {
-      @helper.CSRF.formField
+<hr/>
 
-      @helper.inputText(form("name"))
+@* Global errors are not tied to any particular form field *@
+@if(form.hasGlobalErrors) {
+@form.globalErrors.map { error: FormError =>
+<div>
+    @error.key: @error.message
+</div>
+}
+}
 
-      @helper.inputText(form("price"))
+@helper.form(postUrl) {
+@helper.CSRF.formField
 
-      <button>Create widget</button>
-    }
-  }
+@helper.inputText(form("name"))
+
+@helper.inputText(form("price"))
+
+<button>Create widget</button>
+}
+}

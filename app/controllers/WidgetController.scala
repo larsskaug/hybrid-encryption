@@ -23,16 +23,29 @@ import java.security.SecureRandom
 
 class WidgetController @Inject()(cc: MessagesControllerComponents) extends MessagesAbstractController(cc) {
   import WidgetForm._
-  val elg = new ElGamal(256, "9999999999999")
-
-  val isPrime = elg.miller_rabin(elg.p)
-  val random = new SecureRandom()
 
   private val widgets = mutable.ArrayBuffer(
-    Widget("Widget 1", 123),
-    Widget("Widget 2", 456),
-    Widget("Widget 3", 789)
+    Widget("99999999", 256)
   )
+
+  val elgResults = widgets.map(w => {
+    val elg = new ElGamal(w.price, w.name)
+    val elgEncrypt = elg.encrypt()
+      models.ElgResult(elg.p , elg.g, elg.a, elg.alphaToPowerOfA, elgEncrypt("gamma") , elg.m)
+
+  })
+
+
+
+  val text = "AAAAAAAAAAAAAAAAA"
+  val key = "AABB09182736CCDD"
+  val des = new Des(text, key)
+
+  val cipher = des.encrypt(text, key)
+  val decrypt = des.decrypt(cipher, key)
+
+
+
 
   // The URL to the widget.  You can call this directly from the template, but it
   // can be more convenient to leave the template completely stateless i.e. all
@@ -45,7 +58,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
 
   def listWidgets = Action { implicit request: MessagesRequest[AnyContent] =>
     // Pass an unpopulated form to the template
-    Ok(views.html.listWidgets(widgets.toSeq, form, postUrl, isPrime: Boolean))
+    Ok(views.html.listWidgets(widgets.toSeq, elgResults.toSeq, form, postUrl))
   }
 
   // This will be the action that handles our form post
@@ -54,7 +67,7 @@ class WidgetController @Inject()(cc: MessagesControllerComponents) extends Messa
       // This is the bad case, where the form had validation errors.
       // Let's show the user the form again, with the errors highlighted.
       // Note how we pass the form with errors to the template.
-      BadRequest(views.html.listWidgets(widgets.toSeq, formWithErrors, postUrl, isPrime))
+      BadRequest(views.html.listWidgets(widgets.toSeq, elgResults.toSeq, formWithErrors, postUrl))
     }
 
     val successFunction = { data: Data =>

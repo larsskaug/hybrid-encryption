@@ -8,4 +8,5 @@ package models
  * which are used for writes.
  */
 case class Widget(name: String, price: Int)
-case class ElGamal()
+case class ElgResult(p: BigInt, generator: BigInt, aRandom: BigInt,
+                     alphaToPowerOfA: BigInt, cipher: BigInt, origMsg: BigInt)

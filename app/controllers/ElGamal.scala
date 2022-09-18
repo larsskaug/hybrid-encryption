@@ -10,7 +10,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import scala.util.Random
 
 class ElGamal(val keySize: Int, val msg: String) {
-  // Inspired by https://github.com/norkator/Cryptography/blob/master/src/cryptography/ciphers/elgamal/Elgamal.java
+
   val bc = new BouncyCastleProvider()
   Security.addProvider(bc);
 
@@ -103,8 +103,9 @@ class ElGamal(val keySize: Int, val msg: String) {
   // Compute alpha to the power of a mod p
   val alphaToPowerOfA = squareAndMultiply(g,a,p)
 
+  val m = BigInt(msg)
+
   def encrypt(): Map[String,BigInt] = {
-    val m = BigInt(msg)
     // (c) select k
     val k_ = getRand(p, keySize).toString
     val k = new java.math.BigInteger(k_)

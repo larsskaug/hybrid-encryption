@@ -1,7 +1,7 @@
 package controllers
 import scala.language.postfixOps
 
-object Des {
+class Des(val text: String, val key: String) {
 
 
   // Initial Permutation Table
@@ -53,10 +53,10 @@ object Des {
   def leftCircularShift(input: String, numBits: Int) = {
     var sz = input.size * 4
 
-    var perm = (for (i <- 0 until sz-1) yield i + 2) :+ 1 toArray
+    var perm = (for (i <- 0 until sz - 1) yield i + 2) :+ 1 toArray
 
     def runPermutations(n: Int, res: String): String = {
-      if (n > 0) runPermutations(n-1, permutation(perm, res))
+      if (n > 0) runPermutations(n - 1, permutation(perm, res))
       else res
     }
 
@@ -72,6 +72,7 @@ object Des {
       }
       else keys
     }
+
     val k = permutation(PC1, key)
 
     helper(0, k, Array[String]())
@@ -102,7 +103,7 @@ object Des {
     // decimal to hexadecimal
     var a_ = java.lang.Long.toHexString(t_a)
     // prepend 0's to maintain length
-    while ( a_.length < b.length) a_ = "0" + a_
+    while (a_.length < b.length) a_ = "0" + a_
     a_
   }
 
@@ -121,7 +122,7 @@ object Des {
     temp = permutation(P, temp)
     // xor
     left = xor(left, temp)
-    println("Round " + (num + 1) + " " + right.toUpperCase + " " + left.toUpperCase + " " + key.toUpperCase)
+    //println("Round " + (num + 1) + " " + right.toUpperCase + " " + left.toUpperCase + " " + key.toUpperCase)
     // swapper
     right + left
   }
@@ -145,18 +146,6 @@ object Des {
     for (i <- 15 to 0 by -1) pText = round(pText, keys(i), 15 - i)
     pText = pText.substring(8, 16) + pText.substring(0, 8)
     pText = permutation(IP1, pText);
-    println("Ciper text: " + pText.toUpperCase)
-  }
-
-  def main(args: Array[String]): Unit = {
-    if (args.length != 1) {
-      println("""Please provide an integer ("message") to encrypt as an argument.""")
-    } else {
-      val text = args(0).toString
-      val key = "AABB09182736CCDD"
-      val cipher = encrypt(text, key)
-      decrypt(cipher, key)
-    }
+    println("Original text: " + pText.toUpperCase)
   }
 }
-

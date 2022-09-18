@@ -11,6 +11,10 @@ object WidgetForm {
    * of a parameter tampering attack and makes code clearer.
    */
   case class Data(name: String, price: Int)
+  case class ElgResult(p: BigInt, generator: BigInt, aRandom: BigInt,
+                       alphaToPowerOfA: BigInt, cipher: String, origMsg: String)
+
+
 
   /**
    * The form definition for the "create a widget" form.
